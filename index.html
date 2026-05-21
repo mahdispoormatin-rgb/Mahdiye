@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mahdiye Pourmatin — Personal Career Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Spline+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c0d14;--ink-2:#13141f;--panel:#181a27;--panel-2:#1f2233;
+    --line:#2a2d42;--text:#e8e9f0;--muted:#9396b0;--faint:#646783;
+    --accent:#7c7cff;--accent-dim:#5d5de0;--glow:rgba(124,124,255,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--ink);color:var(--text);
+    font-family:'Spline Sans',sans-serif;-webkit-font-smoothing:antialiased;
+    display:flex;justify-content:center;
+    background-image:
+      radial-gradient(620px 420px at 12% -6%, rgba(124,124,255,.14), transparent 70%),
+      radial-gradient(560px 460px at 100% 110%, rgba(124,124,255,.09), transparent 65%);
+  }
+  .app{
+    width:100%;max-width:760px;min-height:100vh;
+    display:flex;flex-direction:column;
+    border-left:1px solid var(--line);border-right:1px solid var(--line);
+    background:linear-gradient(180deg,var(--ink) 0%, var(--ink-2) 100%);
+  }
+  header{
+    padding:26px 28px 22px;border-bottom:1px solid var(--line);
+    background:rgba(12,13,20,.85);backdrop-filter:blur(10px);
+    position:sticky;top:0;z-index:5;
+  }
+  .badge{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--muted);border:1px solid var(--line);border-radius:999px;
+    padding:5px 11px;margin-bottom:16px;
+  }
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 10px 2px var(--glow)}
+  .id-row{display:flex;align-items:center;gap:16px}
+  .avatar{
+    width:54px;height:54px;border-radius:14px;flex:none;
+    background:linear-gradient(145deg,var(--accent),var(--accent-dim));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-weight:600;font-size:21px;color:#fff;
+    box-shadow:0 8px 26px -8px var(--glow);
+  }
+  .id-text h1{
+    font-family:'Fraunces',serif;font-weight:500;
+    font-size:25px;line-height:1.15;letter-spacing:-.01em;
+  }
+  .id-text .role{font-size:13.5px;color:var(--muted);margin-top:3px}
+  .meta{
+    display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;
+    font-size:12.5px;color:var(--faint);
+  }
+  .meta span{display:flex;align-items:center;gap:6px}
+  .meta svg{opacity:.7}
+  .chat{
+    flex:1;overflow-y:auto;padding:24px 28px 12px;
+    display:flex;flex-direction:column;gap:18px;
+  }
+  .msg{display:flex;gap:11px;max-width:90%;animation:rise .4s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+  .msg.user{align-self:flex-end;flex-direction:row-reverse}
+  .pfp{
+    width:30px;height:30px;border-radius:9px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:600;
+  }
+  .msg.agent .pfp{background:linear-gradient(145deg,var(--accent),var(--accent-dim));
+    color:#fff;font-family:'Fraunces',serif}
+  .msg.user .pfp{background:var(--panel-2);color:var(--muted);border:1px solid var(--line)}
+  .bubble{padding:12px 15px;border-radius:14px;font-size:14.5px;line-height:1.62}
+  .msg.agent .bubble{
+    background:var(--panel);border:1px solid var(--line);
+    border-top-left-radius:5px;color:var(--text);
+  }
+  .msg.user .bubble{
+    background:linear-gradient(145deg,var(--accent-dim),#4a4ad0);
+    color:#fff;border-top-right-radius:5px;
+  }
+  .bubble strong{font-weight:600}
+  .bubble a{color:var(--accent);text-decoration:underline}
+  .msg.user .bubble a{color:#e6e6ff}
+  .typing{display:flex;gap:4px;padding:4px 2px}
+  .typing i{width:6px;height:6px;border-radius:50%;background:var(--faint);
+    animation:bob 1.1s infinite ease-in-out}
+  .typing i:nth-child(2){animation-delay:.15s}
+  .typing i:nth-child(3){animation-delay:.3s}
+  @keyframes bob{0%,80%,100%{transform:translateY(0);opacity:.4}
+    40%{transform:translateY(-5px);opacity:1}}
+  .suggest{padding:4px 28px 6px;display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    font-family:'Spline Sans',sans-serif;font-size:12.5px;color:var(--muted);
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:999px;padding:8px 13px;cursor:pointer;transition:.18s;
+  }
+  .chip:hover{border-color:var(--accent-dim);color:var(--text);
+    background:var(--panel-2);transform:translateY(-1px)}
+  .composer{
+    padding:14px 28px 22px;border-top:1px solid var(--line);
+    background:rgba(12,13,20,.9);
+  }
+  .input-wrap{
+    display:flex;align-items:flex-end;gap:9px;
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:15px;padding:7px 7px 7px 15px;transition:border-color .18s;
+  }
+  .input-wrap:focus-within{border-color:var(--accent-dim)}
+  textarea{
+    flex:1;background:none;border:none;outline:none;resize:none;
+    color:var(--text);font-family:'Spline Sans',sans-serif;
+    font-size:14.5px;line-height:1.5;max-height:120px;padding:7px 0;
+  }
+  textarea::placeholder{color:var(--faint)}
+  .send{
+    width:38px;height:38px;flex:none;border:none;cursor:pointer;
+    border-radius:11px;
+    background:linear-gradient(145deg,var(--accent),var(--accent-dim));
+    display:flex;align-items:center;justify-content:center;transition:.18s;
+  }
+  .send:hover:not(:disabled){transform:translateY(-1px);
+    box-shadow:0 8px 20px -6px var(--glow)}
+  .send:disabled{opacity:.4;cursor:not-allowed}
+  .foot{text-align:center;font-size:11px;color:var(--faint);margin-top:11px}
+  .foot b{color:var(--muted);font-weight:500}
+  .err{color:#ff9b9b;font-size:13px}
+  @media(max-width:560px){
+    header{padding:20px 18px 18px}
+    .chat{padding:20px 18px 10px}
+    .suggest,.composer{padding-left:18px;padding-right:18px}
+    .id-text h1{font-size:22px}
+    .msg{max-width:96%}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <span class="badge"><span class="dot"></span>AI Career Agent · live</span>
+    <div class="id-row">
+      <div class="avatar">MP</div>
+      <div class="id-text">
+        <h1>Mahdiye Pourmatin</h1>
+        <div class="role">HR Management M.Sc. · Aspiring Pricing &amp; Revenue Management</div>
+      </div>
+    </div>
+    <div class="meta">
+      <span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-5.7-7-11a7 7 0 0114 0c0 5.3-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+        Vienna, Austria
+      </span>
+      <span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        mahdispoormatin@gmail.com
+      </span>
+      <span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h4l2 5-3 2a14 14 0 006 6l2-3 5 2v4a2 2 0 01-2 2A17 17 0 014 6a2 2 0 010-2z"/></svg>
+        +43 667 4422207
+      </span>
+    </div>
+  </header>
+
+  <div class="chat" id="chat">
+    <div class="msg agent">
+      <div class="pfp">M</div>
+      <div class="bubble">
+        Hi — I'm Mahdiye's personal AI agent. I can answer recruiter questions
+        about her background, skills, and what kind of role she's looking for.
+        Ask me anything, in <strong>English, Italian, German, or Persian</strong>.
+      </div>
+    </div>
+  </div>
+
+  <div class="suggest" id="suggest">
+    <div class="chip">Walk me through her background</div>
+    <div class="chip">Why pricing &amp; revenue management?</div>
+    <div class="chip">What are her strongest skills?</div>
+    <div class="chip">What's her biggest weakness?</div>
+    <div class="chip">Can she work in Austria?</div>
+  </div>
+
+  <div class="composer">
+    <div class="input-wrap">
+      <textarea id="input" rows="1" placeholder="Ask the agent a question…"></textarea>
+      <button class="send" id="send" aria-label="Send">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
+    <div class="foot">AI-powered · answers are generated from Mahdiye's CV</div>
+  </div>
+
+</div>
+
+<script>
+const chat = document.getElementById('chat');
+const input = document.getElementById('input');
+const send = document.getElementById('send');
+const suggest = document.getElementById('suggest');
+let history = [];
+let busy = false;
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmt(s){
+  return esc(s)
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/(mahdispoormatin@gmail\.com)/g,'<a href="mailto:$1">$1</a>')
+    .replace(/\n/g,'<br>');
+}
+function addMsg(role, text){
+  const m = document.createElement('div');
+  m.className = 'msg ' + (role==='user'?'user':'agent');
+  m.innerHTML = '<div class="pfp">'+(role==='user'?'You':'M')+'</div>'+
+                '<div class="bubble">'+fmt(text)+'</div>';
+  chat.appendChild(m);
+  chat.scrollTop = chat.scrollHeight;
+  return m;
+}
+function showTyping(){
+  const m = document.createElement('div');
+  m.className = 'msg agent'; m.id = 'typing';
+  m.innerHTML = '<div class="pfp">M</div><div class="bubble"><div class="typing"><i></i><i></i><i></i></div></div>';
+  chat.appendChild(m);
+  chat.scrollTop = chat.scrollHeight;
+}
+function hideTyping(){ const t=document.getElementById('typing'); if(t) t.remove(); }
+
+async function ask(text){
+  if(busy || !text.trim()) return;
+  busy = true; send.disabled = true;
+  suggest.style.display = 'none';
+  addMsg('user', text);
+  history.push({role:'user', content:text});
+  input.value=''; input.style.height='auto';
+  showTyping();
+
+  try{
+    const res = await fetch("/api/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({ messages:history })
+    });
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error || ("HTTP "+res.status));
+    hideTyping();
+    const reply = (data.reply || "Sorry, I couldn't generate a response.").trim();
+    addMsg('agent', reply);
+    history.push({role:'assistant', content:reply});
+  }catch(e){
+    hideTyping();
+    const m = addMsg('agent','');
+    m.querySelector('.bubble').innerHTML =
+      '<span class="err">'+esc(e.message || 'Something went wrong.')+' '+
+      'You can try again, or email Mahdiye directly at '+
+      '<a href="mailto:mahdispoormatin@gmail.com">mahdispoormatin@gmail.com</a>.</span>';
+  }finally{
+    busy = false; send.disabled = false; input.focus();
+  }
+}
+
+send.addEventListener('click', ()=>ask(input.value));
+input.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); ask(input.value); }
+});
+input.addEventListener('input', ()=>{
+  input.style.height='auto';
+  input.style.height=Math.min(input.scrollHeight,120)+'px';
+});
+suggest.querySelectorAll('.chip').forEach(c=>{
+  c.addEventListener('click', ()=>ask(c.textContent.trim()));
+});
+input.focus();
+</script>
+</body>
+</html>
