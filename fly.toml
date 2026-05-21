@@ -1,25 +1,27 @@
-# Fly.io configuration.
-# `fly launch` will confirm or change the app name and region for you.
+# fly.toml app configuration file generated for mahdiye-1x96wq on 2026-05-21T13:09:42Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-
-primary_region = "fra"   # Frankfurt — closest Fly region to Vienna
+app = 'mahdiye-1x96wq'
+primary_region = 'ams'
 
 [build]
 
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = "stop"
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
 
-[[http_service.checks]]
-  grace_period = "5s"
-  interval = "30s"
-  method = "get"
-  path = "/health"
-  timeout = "4s"
+  [[http_service.checks]]
+    interval = '30s'
+    timeout = '4s'
+    grace_period = '5s'
+    method = 'get'
+    path = '/health'
 
 [[vm]]
-  size = "shared-cpu-1x"
-  memory = "256mb"
+  size = 'shared-cpu-1x'
+  memory = '256mb'
