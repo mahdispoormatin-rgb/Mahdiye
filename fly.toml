@@ -1,7 +1,7 @@
 # Fly.io configuration.
 # `fly launch` will confirm or change the app name and region for you.
 
-app = "mahdiye-cv-agent"
+
 primary_region = "fra"   # Frankfurt — closest Fly region to Vienna
 
 [build]
